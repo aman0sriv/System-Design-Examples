@@ -3,6 +3,7 @@
 #include "Moves.hpp"
 #include "Dice.hpp"
 #include <bits/stdc++.h>
+#include <optional>
 using namespace std;
 class Game{
  public:
@@ -19,13 +20,17 @@ class Game{
       int id=0;
       while(!end_){
         int dice_move = dice_.roll();
-        int new_pos = moves_.get_pos(players_positon_[id],dice_move);
-        display_pos(id,dice_move,new_pos);
-        if(new_pos==100){
+        optional<int> new_pos = moves_.get_pos(players_positon_[id],dice_move);
+        if(new_pos == nullopt){
+          // add exception handling
+          return;
+        }
+        display_pos(id,dice_move,*new_pos);
+        if(*new_pos==100){
           end_ = true;
           winner(id);return;
         }
-        players_positon_[id] = new_pos;
+        players_positon_[id] = *new_pos;
         id++;id %= players_;
       }
     }
